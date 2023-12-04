@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "experimentalDecorators": true
+    },
+    "lib": ["es2015"],
+    "ts-node": {
+        "esm": true
+    }
+}

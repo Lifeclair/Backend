@@ -1,4 +1,4 @@
-const createError = (error: unknown) => {
+export const createError = (error: unknown) => {
     let response: { status: number; error: string | string[] } = {
         error: '',
         status: 0,

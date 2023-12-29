@@ -1,6 +1,6 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+export const UserSchema = new mongoose.Schema({
     name: String,
     email: String,
     password: String,
@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
     blocked: Boolean,
     lastLogin: Date,
     blockedDate: Date,
+    attempsLogin: Number,
 });
 export type UserType = InferSchemaType<typeof UserSchema>;
 export const UserModel = mongoose.model('User', UserSchema);

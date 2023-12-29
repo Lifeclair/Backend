@@ -1,13 +1,19 @@
 import mongoose from 'mongoose';
 import 'dotenv/config';
-import { app } from './config/server';
+import { app } from './routes/index';
 
 const mongoURL = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017`;
-
 const connect = async () =>
     await mongoose.connect(mongoURL, { dbName: 'life' });
 
-connect().then(() => console.log('Connected to MongoDB'));
+(async () => {
+    try {
+        await connect();
+        console.log('connected');
+    } catch (error) {
+        console.log(error);
+    }
+})();
 
 const port = process.env.PORT || 3001;
 

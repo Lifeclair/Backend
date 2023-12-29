@@ -1,17 +1,20 @@
 import { ValidateNested } from 'class-validator';
 import { UserModel, UserType } from '../Schemas/User.schema';
 import bcrypt from 'bcrypt';
-
+import fs from 'fs';
+import jwt from 'jsonwebtoken';
 export class UserService {
     @ValidateNested()
     User: UserType;
     private saltRounds = 10;
+    private privateKey = fs.readFileSync('private_key.pem', 'utf-8');
+    private publicKey = fs.readFileSync('public_key.pem', 'utf-8');
 
     constructor(User: UserType) {
         this.User = User;
     }
 
-    public async Login(): Promise<UserType> {
+    public async Login(): Promise<string> {
         if (!this.User.email || !this.User.password) {
             throw {
                 message: 'User or password incorrect',
@@ -67,7 +70,20 @@ export class UserService {
             };
         }
 
-        return user;
+        const token = jwt.sign(
+            {
+                sub: user.id,
+                name: user.name,
+                iat: new Date().getTime(),
+            },
+            this.privateKey,
+            {
+                algorithm: 'RS256',
+                expiresIn: '1h',
+            }
+        );
+
+        return token;
     }
     register = async (): Promise<UserType> => {
         const user = await UserModel.findOne({ email: this.User.email });

@@ -1,14 +1,13 @@
 import { ValidateNested } from 'class-validator';
 import { UserModel, UserType } from '../Schemas/User.schema';
 import bcrypt from 'bcrypt';
-import fs from 'fs';
-import jwt from 'jsonwebtoken';
+import { createToken } from '../utilities/createToken';
+
 export class UserService {
     @ValidateNested()
     User: UserType;
     private saltRounds = 10;
-    private privateKey = fs.readFileSync('private_key.pem', 'utf-8');
-    private publicKey = fs.readFileSync('public_key.pem', 'utf-8');
+    
 
     constructor(User: UserType) {
         this.User = User;
@@ -70,21 +69,11 @@ export class UserService {
             };
         }
 
-        const token = jwt.sign(
-            {
-                sub: user.id,
-                name: user.name,
-                iat: new Date().getTime(),
-            },
-            this.privateKey,
-            {
-                algorithm: 'RS256',
-                expiresIn: '1h',
-            }
-        );
-
-        return token;
+       
+       
+        return createToken(user);
     }
+
     register = async (): Promise<UserType> => {
         const user = await UserModel.findOne({ email: this.User.email });
         if (user) {

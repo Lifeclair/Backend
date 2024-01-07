@@ -13,6 +13,7 @@ export const UserSchema = new mongoose.Schema({
     lastLogin: Date,
     blockedDate: Date,
     attempsLogin: Number,
+    passwordID: String,
 });
 export type UserType = InferSchemaType<typeof UserSchema>;
 export const UserModel = mongoose.model('User', UserSchema);

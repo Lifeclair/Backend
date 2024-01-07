@@ -7,7 +7,6 @@ export class UserService {
     @ValidateNested()
     User: UserType;
     private saltRounds = 10;
-    
 
     constructor(User: UserType) {
         this.User = User;
@@ -69,8 +68,6 @@ export class UserService {
             };
         }
 
-       
-       
         return createToken(user);
     }
 
@@ -99,6 +96,7 @@ export class UserService {
             lastLogin: new Date(),
             blockedDate: null,
             attempsLogin: 0,
+            passwordID: crypto.randomUUID(),
         };
 
         this.User = userToCreate;

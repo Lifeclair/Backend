@@ -60,3 +60,32 @@ export class UserController {
         return res.status(status).json(response);
     };
 }
+
+/**
+ * import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+  cambioContraseñaId: { type: String, default: 'valor-unico-inicial' },
+});
+
+// Middleware de Mongoose para antes de guardar el usuario
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    // Si la contraseña ha sido modificada, hashearla antes de guardar
+    const saltRounds = 10;
+    this.password = await bcrypt.hash(this.password, saltRounds);
+    // Actualizar el identificador único asociado a la contraseña
+    this.cambioContraseñaId = mongoose.Types.ObjectId().toString();
+  }
+  next();
+});
+
+const Usuario = mongoose.model('Usuario', userSchema);
+
+export default Usuario;
+
+ */

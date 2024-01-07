@@ -1,5 +1,6 @@
+import { UserController } from '@controller';
 import { Router } from 'express';
-import { UserController } from '../controller/User.controller';
+
 export class UserRoutes {
     private userController: UserController = new UserController();
     router = Router();

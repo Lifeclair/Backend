@@ -1,7 +1,7 @@
+import { TokenPayload } from '@models';
 import { NextFunction, Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { verify } from 'jsonwebtoken';
-import { TokenPayload } from '../models/Token';
 
 const publicKey = readFileSync('public_key.pem', 'utf-8');
 

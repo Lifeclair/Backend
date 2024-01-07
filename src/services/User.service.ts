@@ -1,7 +1,7 @@
-import { ValidateNested } from 'class-validator';
-import { UserModel, UserType } from '../Schemas/User.schema';
+import { UserModel, UserType } from '@Schemas';
+import { createToken } from '@utilities';
 import bcrypt from 'bcrypt';
-import { createToken } from '../utilities/createToken';
+import { ValidateNested } from 'class-validator';
 
 export class UserService {
     @ValidateNested()

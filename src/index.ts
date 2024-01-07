@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import { app } from '@routes/index';
 import 'dotenv/config';
-import { app } from './routes/index';
+import mongoose from 'mongoose';
 
 const mongoURL = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017`;
 const connect = async () =>

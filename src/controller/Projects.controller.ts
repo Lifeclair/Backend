@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { ProjectsType } from '../Schemas/Projects.schema';
-import { ResponseApi } from '../models/ResponseApi';
-import { ProjectsService } from '../services/Projects.service';
-import { createError } from '../utilities/createError';
+import { ResponseApi } from '@models';
+import { ProjectsService } from '@services';
+import { createError } from '@utilities';
 
 export class ProjectsController {
     private Projects: typeof ProjectsService = ProjectsService;

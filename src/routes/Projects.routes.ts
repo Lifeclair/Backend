@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { ProjectsController } from '@controller';
-import { validateToken } from '@utilities';
+import { ProjectsController } from '@/controller';
+import { validateToken } from '@/utilities';
 
 export class ProjectRoutes {
     private projectController: ProjectsController = new ProjectsController();

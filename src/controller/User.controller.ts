@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { UserService } from '@services';
-import { ResponseApi } from '@models';
-import { UserType } from '@Schemas';
-import { createError } from '@utilities';
+import { UserService } from '@/services';
+import { ResponseApi } from '@/models';
+import { UserType } from '@/Schemas';
+import { createError } from '@/utilities';
 
 export class UserController {
     private User: typeof UserService = UserService;

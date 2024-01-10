@@ -1,5 +1,5 @@
-import { UserModel, UserType } from '@Schemas';
-import { createToken } from '@utilities';
+import { UserModel, UserType } from '@/Schemas';
+import { createToken } from '@/utilities';
 import bcrypt from 'bcrypt';
 import { ValidateNested } from 'class-validator';
 
@@ -32,26 +32,31 @@ export class UserService {
                 error: true,
             };
         }
-
-        if (user.blocked && user.blockedDate > new Date()) {
-            throw {
-                message: 'User blocked',
-                status: 400,
-                error: true,
-            };
-        } else if (user.blocked && user.blockedDate < new Date()) {
-            user.blocked = false;
-            user.blockedDate = null;
-            user.userAttempts = 0;
-            await user.save();
+        
+        if(user.blockedDate){
+            if (user.blocked && user.blockedDate > new Date()) {
+                throw {
+                    message: 'User blocked',
+                    status: 400,
+                    error: true,
+                };
+            } else if (user.blocked && user.blockedDate < new Date()) {
+                user.blocked = false;
+                user.blockedDate = null;
+                user.userAttempts = 0;
+                await user.save();
+            }
         }
 
         const hashPassword = bcrypt.compareSync(
             this.User.password,
-            user.password
+            user.password || ''
         );
 
         if (!hashPassword) {
+            if (!user.userAttempts) {
+                user.userAttempts = 0;
+            }
             user.userAttempts += 1;
             if (user.userAttempts >= 3) {
                 const dateBlocked = new Date();

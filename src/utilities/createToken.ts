@@ -1,6 +1,6 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
-import { UserType } from '@Schemas';
+import { UserType } from '@/Schemas';
 
 const privateKey = fs.readFileSync('private_key.pem', 'utf-8');
 

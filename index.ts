@@ -1,5 +1,6 @@
-import { app } from '@routes/index';
+import { app } from '@/routes';
 import 'dotenv/config';
+import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
 const mongoURL = `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@localhost:27017`;
@@ -21,6 +22,6 @@ app.listen(port, () =>
     console.log(`Listening on port http://localhost:${port}...`)
 );
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send('Wellcome of the homepage of Life');
 });

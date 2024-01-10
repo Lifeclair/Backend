@@ -7,6 +7,7 @@ export const createError = (error: unknown) => {
         response.status = 502;
         response.error = error?.message;
     } else if (
+        error !== null &&
         typeof error === 'object' &&
         'error' in error &&
         'message' in error &&

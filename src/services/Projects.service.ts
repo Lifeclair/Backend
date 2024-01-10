@@ -1,5 +1,5 @@
 import { ValidateNested } from 'class-validator';
-import { ProjectsType } from '@Schemas/Projects.schema';
+import { ProjectsType } from '@/Schemas/Projects.schema';
 
 export class ProjectsService {
     @ValidateNested()

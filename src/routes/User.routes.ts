@@ -1,4 +1,4 @@
-import { UserController } from '@controller';
+import { UserController } from '@/controller';
 import { Router } from 'express';
 
 export class UserRoutes {

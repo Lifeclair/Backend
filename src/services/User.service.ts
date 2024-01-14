@@ -32,8 +32,8 @@ export class UserService {
                 error: true,
             };
         }
-        
-        if(user.blockedDate){
+
+        if (user.blockedDate) {
             if (user.blocked && user.blockedDate > new Date()) {
                 throw {
                     message: 'User blocked',
@@ -108,5 +108,17 @@ export class UserService {
 
         const newUser = new UserModel(this.User);
         return newUser.save();
+    };
+
+    static getById = async (id: string): Promise<UserType> => {
+        const user = await UserModel.findById(id);
+        if (!user) {
+            throw {
+                message: 'User not found',
+                status: 404,
+                error: true,
+            };                                                              
+        }
+        return user;
     };
 }

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ResponseApi } from '@/models';
 import { ProjectsService } from '@/services';
 import { createError } from '@/utilities';
+import { ProjectsType } from '@/Schemas';
 
 export class ProjectsController {
     private Projects: typeof ProjectsService = ProjectsService;
@@ -20,22 +21,19 @@ export class ProjectsController {
         console.log(user);
 
         try {
-            // // const projectObject: ProjectsType = {
-            // //     days: [],
-            // //     hours: [],
-            // // };
-            // // const Projects = new this.Projects({
-            // //     name,
-            // //     description,
-            // //     days: [],
-            // //     hours: [],
-            // // });
-            // const project = await Projects.createProject();
-            // if (project) {
-            //     response.data = 'Project created successfully';
-            // } else {
-            //     response.data = 'Project not created';
-            // }
+            const Projects = new this.Projects({
+                name,
+                description,
+                days: [],
+                hours: [],
+                User: user._id,
+            });
+            const project = await Projects.createProject();
+            if (project) {
+                response.data = 'Project created successfully';
+            } else {
+                response.data = 'Project not created';
+            }
         } catch (error) {
             const result = createError(error);
             response.error = true;

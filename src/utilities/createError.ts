@@ -3,6 +3,7 @@ export const createError = (error: unknown) => {
         error: '',
         status: 0,
     };
+
     if (error instanceof Error) {
         response.status = 502;
         response.error = error?.message;
@@ -11,7 +12,7 @@ export const createError = (error: unknown) => {
         typeof error === 'object' &&
         'error' in error &&
         'message' in error &&
-        typeof error.message === 'string'
+        (typeof error.message === 'string' || Array.isArray(error.message))
     ) {
         response.status = 400;
         response.error = error.message;

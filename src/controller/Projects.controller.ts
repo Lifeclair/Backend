@@ -15,17 +15,11 @@ export class ProjectsController {
             data: '',
         };
         const body = req.body;
-        const name = body?.name;
-        const description = body?.description;
         const user = body?.user;
-        console.log(user);
 
         try {
             const Projects = new this.Projects({
-                name,
-                description,
-                days: [],
-                hours: [],
+                ...body,
                 User: user._id,
             });
             const project = await Projects.createProject();

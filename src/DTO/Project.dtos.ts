@@ -1,33 +1,67 @@
-import { UserType } from '@/Schemas';
 import {
     IsArray,
     IsBoolean,
     IsDate,
+    IsIn,
     IsNumber,
     IsString,
+    Max,
+    MaxLength,
+    Min,
+    MinLength,
+    ValidateIf,
+    maxLength,
 } from 'class-validator';
-import { ObjectId, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
+type DaysOfTheWeek =
+    | 'Monday'
+    | 'Tuesday'
+    | 'Wednesday'
+    | 'Thursday'
+    | 'Friday'
+    | 'Saturday'
+    | 'Sunday';
+export type DaysOfTheWeekArray = Partial<DaysOfTheWeek>[];
+const prueba: DaysOfTheWeekArray = ['Monday'];
+
+export const daysOfTheWeek: DaysOfTheWeekArray = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+];
 export class CreateProjectDto {
     @IsString()
+    @MinLength(4)
+    @MaxLength(100)
     name: string;
 
     @IsArray()
-    days: string[];
+    @IsString({ each: true })
+    @IsIn(daysOfTheWeek, { each: true })
+    days: DaysOfTheWeekArray;
 
     @IsArray()
     hours: string[];
 
     @IsNumber()
+    @ValidateIf((obj, value) => value !== null && value !== undefined)
     repetitions: number | undefined | null;
 
     @IsBoolean()
+    @ValidateIf((obj, value) => value !== null && value !== undefined)
     end: boolean | undefined | null;
 
     @IsDate()
+    @ValidateIf((obj, value) => value !== null && value !== undefined)
     dayOfEnd: Date | undefined | null;
 
     @IsString()
+    @ValidateIf((obj, value) => value !== null && value !== undefined)
     description: string | null | undefined;
 
     User: Types.ObjectId;
@@ -40,7 +74,7 @@ export class CreateProjectDto {
         dayOfEnd,
         description,
         User,
-    }: CreateProjectDto) {
+    }: Omit<CreateProjectDto, 'daysOfTheWeek'>) {
         this.name = name;
         this.days = days;
         this.hours = hours;

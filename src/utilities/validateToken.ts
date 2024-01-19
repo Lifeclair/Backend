@@ -27,6 +27,13 @@ export const validateToken = (
         }
         const user = await UserService.getById((decoded as TokenPayload).sub);
 
+        if (user.passwordID !== (decoded as TokenPayload).passwordID) {
+            return res.status(440).json({
+                message: 'Session expired',
+                error: true,
+            });
+        }
+
         req.body.user = user;
 
         return next();

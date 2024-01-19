@@ -7,6 +7,30 @@ export const Projects = new mongoose.Schema({
     },
     days: [String],
     hours: [String],
+    projectDays: [
+        {
+            date: {
+                type: Date,
+                required: true,
+            },
+            projectsCompleted: {
+                type: Number,
+                default: 0,
+            },
+        },
+    ],
+    morning: {
+        required: false,
+        type: Boolean,
+    },
+    afternoon: {
+        required: false,
+        type: Boolean,
+    },
+    night: {
+        required: false,
+        type: Boolean,
+    },
     repetitions: Number,
     end: Boolean,
     dayOfEnd: Date,

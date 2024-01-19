@@ -1,3 +1,4 @@
+import { ProjectsType } from '@/Schemas';
 import {
     IsArray,
     IsBoolean,
@@ -34,7 +35,7 @@ export const daysOfTheWeek: DaysOfTheWeekArray = [
     'Saturday',
     'Sunday',
 ];
-export class CreateProjectDto {
+export class CreateProjectDto implements Omit<ProjectsType, 'User'> {
     @IsString()
     @MinLength(4)
     @MaxLength(100)
@@ -64,6 +65,9 @@ export class CreateProjectDto {
     @ValidateIf((obj, value) => value !== null && value !== undefined)
     description: string | null | undefined;
 
+    @IsArray()
+    projectDays: ProjectsType['projectDays'];
+
     User: Types.ObjectId;
     constructor({
         name,
@@ -83,5 +87,12 @@ export class CreateProjectDto {
         this.dayOfEnd = dayOfEnd;
         this.description = description;
         this.User = User;
+        this.projectDays = [] as unknown as Types.DocumentArray<{
+            date: Date;
+            projectsCompleted: number;
+        }>;
     }
+    morning?: boolean | null | undefined;
+    afternoon?: boolean | null | undefined;
+    night?: boolean | null | undefined;
 }

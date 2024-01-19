@@ -24,11 +24,17 @@ export class ProjectsService extends GeneralService {
             end: this.Projects.end,
             dayOfEnd: dayOfEnd,
             description: this.Projects.description,
+            projectDays: this.Projects.projectDays,
+            afternoon: this.Projects.afternoon,
+            morning: this.Projects.morning,
+            night: this.Projects.night,
         });
-        console.log(project);
+
         await this.transformValidatorErrors(project);
 
         const projectCrated = await ProjectsModel.create(this.Projects);
         return projectCrated;
     };
+
+    getProjectById = async () => {};
 }

@@ -10,7 +10,7 @@ const createToken = (user: UserType) => {
             sub: Object(user).id,
             name: user.name,
             iat: new Date().getTime(),
-            idPassword: user.passwordID,
+            passwordID: user.passwordID,
         },
         privateKey,
         {

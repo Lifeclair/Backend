@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
 import { ResponseApi } from '@/models';
 import { ProjectsService } from '@/services';
 import { createError } from '@/utilities';
-import { ProjectsType } from '@/Schemas';
+import { Request, Response } from 'express';
 
 export class ProjectsController {
     private Projects: typeof ProjectsService = ProjectsService;
@@ -37,4 +36,31 @@ export class ProjectsController {
 
         return res.status(status).json(response);
     };
+
+    getProjectById = async (req: Request, res: Response) => {
+        let status = 200;
+
+        const response: ResponseApi<string | string[]> = {
+            error: false,
+            data: '',
+        };
+        const params = req.params;
+        const user = req.body?.user;
+
+        try {
+            const project = await this.Projects
+            if (project) {
+                // response.data = project;s
+            } else {
+                response.data = 'Project not found';
+            }
+        } catch (error) {
+            const result = createError(error);
+            response.error = true;
+            response.data = result.error;
+            status = result.status;
+        }
+
+        return res.status(status).json(response);
+    }
 }

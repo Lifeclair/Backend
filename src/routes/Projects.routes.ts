@@ -15,6 +15,24 @@ export class ProjectRoutes {
             this.projectController.createProject
         );
 
+        this.router.get(
+            `/${this.path}/${this.version}/user`,
+            validateToken,
+            this.projectController.getProjectsByUserId
+        );
+
+        this.router.get(
+            `/${this.path}/${this.version}`,
+            validateToken,
+            this.projectController.getProjectById
+        );
+
+        this.router.post(
+            `/${this.path}/${this.version}/complete`,
+            validateToken,
+            this.projectController.completeDay
+        );
+
         return this.router;
     }
 }

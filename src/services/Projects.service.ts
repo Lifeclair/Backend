@@ -1,6 +1,11 @@
-import { CreateProjectDto, DaysOfTheWeekArray } from '@/DTO/Project.dtos';
+import {
+    CreateProjectDto,
+    DaysOfTheWeekArray,
+    GetProjectById,
+    GetByUserId,
+    daysOfTheWeek,
+} from '@/DTO/Project.dtos';
 import { ProjectsModel, ProjectsType } from '@/Schemas/Projects.schema';
-import { validate } from 'class-validator';
 import { GeneralService } from './General.service';
 
 export class ProjectsService extends GeneralService {
@@ -15,6 +20,7 @@ export class ProjectsService extends GeneralService {
         if (typeof this.Projects.dayOfEnd === 'string') {
             dayOfEnd = new Date(this.Projects.dayOfEnd);
         }
+
         const project = new CreateProjectDto({
             name: this.Projects.name,
             days: this.Projects.days as DaysOfTheWeekArray,
@@ -24,7 +30,7 @@ export class ProjectsService extends GeneralService {
             end: this.Projects.end,
             dayOfEnd: dayOfEnd,
             description: this.Projects.description,
-            projectDays: this.Projects.projectDays,
+            doItDays: this.Projects.doItDays,
             afternoon: this.Projects.afternoon,
             morning: this.Projects.morning,
             night: this.Projects.night,
@@ -37,4 +43,60 @@ export class ProjectsService extends GeneralService {
     };
 
     getProjectById = async () => {};
+    getProjectsByUserId = async () => {
+        const idUser = this.Projects.User.toString();
+        const projectValidation = new GetByUserId({ idUser });
+        console.log(projectValidation);
+        await this.transformValidatorErrors(projectValidation);
+
+        const projects = await ProjectsModel.find({
+            User: idUser,
+        });
+        return projects;
+    };
+
+    completeDay = async (day: Date) => {
+        if (!this.Projects._id || !this.Projects.User)
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+
+        const idProject = this.Projects._id.toString();
+        const idUser = this.Projects.User.toString();
+        const project = new GetProjectById({ id: idProject });
+        await this.transformValidatorErrors(project);
+
+        const projectFound = await ProjectsModel.findOne({
+            _id: idProject,
+            User: idUser,
+            doItDays: {
+                $not: {
+                    $elemMatch: {
+                        date: day,
+                    },
+                },
+            },
+        });
+
+        if (!projectFound) {
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+        }
+        const dayOfTheWeek = day.toLocaleDateString('en-US', {
+            weekday: 'long',
+        });
+
+        projectFound.doItDays.push({
+            date: day,
+            complete: true,
+            day: dayOfTheWeek,
+        });
+
+        projectFound.save();
+
+        return projectFound;
+    };
 }

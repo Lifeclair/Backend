@@ -35,7 +35,6 @@ export const validateToken = (
         }
 
         req.body.user = user;
-
         return next();
     });
 };

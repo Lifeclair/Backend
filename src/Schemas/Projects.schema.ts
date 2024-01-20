@@ -1,4 +1,4 @@
-import mongoose, { InferSchemaType } from 'mongoose';
+import mongoose, { InferSchemaType, Types } from 'mongoose';
 
 export const Projects = new mongoose.Schema({
     name: {
@@ -7,15 +7,19 @@ export const Projects = new mongoose.Schema({
     },
     days: [String],
     hours: [String],
-    projectDays: [
+    doItDays: [
         {
             date: {
                 type: Date,
                 required: true,
             },
-            projectsCompleted: {
-                type: Number,
-                default: 0,
+            complete: {
+                type: Boolean,
+                required: true,
+            },
+            day: {
+                type: String,
+                required: true,
             },
         },
     ],
@@ -42,4 +46,6 @@ export const Projects = new mongoose.Schema({
     },
 });
 export const ProjectsModel = mongoose.model('Projects', Projects);
-export type ProjectsType = InferSchemaType<typeof Projects>;
+export type ProjectsType = InferSchemaType<typeof Projects> & {
+    _id: Types.ObjectId;
+};

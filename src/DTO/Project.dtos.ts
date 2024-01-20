@@ -6,12 +6,9 @@ import {
     IsIn,
     IsNumber,
     IsString,
-    Max,
     MaxLength,
-    Min,
     MinLength,
     ValidateIf,
-    maxLength,
 } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -35,7 +32,7 @@ export const daysOfTheWeek: DaysOfTheWeekArray = [
     'Saturday',
     'Sunday',
 ];
-export class CreateProjectDto implements Omit<ProjectsType, 'User'> {
+export class CreateProjectDto implements Omit<ProjectsType, 'User' | '_id'> {
     @IsString()
     @MinLength(4)
     @MaxLength(100)
@@ -66,7 +63,7 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User'> {
     description: string | null | undefined;
 
     @IsArray()
-    projectDays: ProjectsType['projectDays'];
+    doItDays: ProjectsType['doItDays'];
 
     User: Types.ObjectId;
     constructor({
@@ -78,7 +75,7 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User'> {
         dayOfEnd,
         description,
         User,
-    }: Omit<CreateProjectDto, 'daysOfTheWeek'>) {
+    }: Omit<CreateProjectDto, 'daysOfTheWeek' | '_id'>) {
         this.name = name;
         this.days = days;
         this.hours = hours;
@@ -87,12 +84,43 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User'> {
         this.dayOfEnd = dayOfEnd;
         this.description = description;
         this.User = User;
-        this.projectDays = [] as unknown as Types.DocumentArray<{
+        this.doItDays = [] as unknown as Types.DocumentArray<{
             date: Date;
-            projectsCompleted: number;
+            complete: boolean;
+            day: string;
         }>;
     }
     morning?: boolean | null | undefined;
     afternoon?: boolean | null | undefined;
     night?: boolean | null | undefined;
+}
+
+export class GetProjectById {
+    @IsString()
+    @MinLength(4)
+    @MaxLength(100)
+    id: string;
+    constructor({ id }: GetProjectById) {
+        this.id = id;
+    }
+}
+
+export class GetByUserId {
+    @IsString()
+    @MinLength(4)
+    @MaxLength(100)
+    idUser: string;
+    constructor({ idUser }: GetByUserId) {
+        this.idUser = idUser;
+    }
+}
+
+export class Id {
+    @IsString()
+    @MinLength(4)
+    @MaxLength(100)
+    id: string;
+    constructor({ id }: Id) {
+        this.id = id;
+    }
 }

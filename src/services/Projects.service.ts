@@ -15,6 +15,22 @@ export class ProjectsService extends GeneralService {
         this.Projects = Projects;
     }
 
+    private getCompleteDayIndex = ({
+        projects,
+        day,
+    }: {
+        projects: ProjectsType;
+        day: Date;
+    }) => {
+        return projects.doItDays.findIndex((dayItem) => {
+            let returnDay: unknown = false;
+            if (dayItem.date.getTime() === day.getTime()) {
+                returnDay = dayItem;
+            }
+            return returnDay;
+        });
+    };
+
     createProject = async (): Promise<ProjectsType> => {
         let dayOfEnd = undefined;
         if (typeof this.Projects.dayOfEnd === 'string') {
@@ -46,7 +62,6 @@ export class ProjectsService extends GeneralService {
     getProjectsByUserId = async () => {
         const idUser = this.Projects.User.toString();
         const projectValidation = new GetByUserId({ idUser });
-        console.log(projectValidation);
         await this.transformValidatorErrors(projectValidation);
 
         const projects = await ProjectsModel.find({
@@ -74,6 +89,7 @@ export class ProjectsService extends GeneralService {
                 $not: {
                     $elemMatch: {
                         date: day,
+                        complete: true,
                     },
                 },
             },
@@ -85,15 +101,71 @@ export class ProjectsService extends GeneralService {
                 message: 'Project not found',
             };
         }
+
         const dayOfTheWeek = day.toLocaleDateString('en-US', {
             weekday: 'long',
         });
 
-        projectFound.doItDays.push({
-            date: day,
-            complete: true,
-            day: dayOfTheWeek,
+        day.setHours(0, 0, 0, 0);
+
+        const indexDay = this.getCompleteDayIndex({
+            projects: projectFound,
+            day,
         });
+
+        if (!projectFound.days[indexDay]) {
+            projectFound.doItDays.push({
+                date: day,
+                complete: true,
+                day: dayOfTheWeek,
+            });
+        } else {
+            projectFound.doItDays[indexDay].complete = true;
+        }
+
+        projectFound.save();
+
+        return projectFound;
+    };
+
+    changeState = async (day: Date) => {
+        if (!this.Projects._id || !this.Projects.User)
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+
+        const idProject = this.Projects._id.toString();
+        const idUser = this.Projects.User.toString();
+        const project = new GetProjectById({ id: idProject });
+        await this.transformValidatorErrors(project);
+
+        const projectFound = await ProjectsModel.findOne({
+            _id: idProject,
+            User: idUser,
+            doItDays: {
+                $elemMatch: {
+                    date: day,
+                },
+            },
+        });
+
+        if (!projectFound) {
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+        }
+
+        day.setHours(0, 0, 0, 0);
+
+        const indexDay = this.getCompleteDayIndex({
+            projects: projectFound,
+            day,
+        });
+
+        projectFound.doItDays[indexDay].complete =
+            !projectFound.doItDays[indexDay].complete;
 
         projectFound.save();
 

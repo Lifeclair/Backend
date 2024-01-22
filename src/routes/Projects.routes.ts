@@ -33,6 +33,12 @@ export class ProjectRoutes {
             this.projectController.completeDay
         );
 
+        this.router.post(
+            `/${this.path}/${this.version}/changeState`,
+            validateToken,
+            this.projectController.changeState
+        );
+
         return this.router;
     }
 }

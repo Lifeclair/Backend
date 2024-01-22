@@ -129,4 +129,37 @@ export class ProjectsController {
 
         return res.status(status).json(response);
     };
+
+    changeState = async (req: Request, res: Response) => {
+        let status = 200;
+
+        const response: ResponseApi<string | ProjectsType | string[]> = {
+            error: false,
+            data: '',
+        };
+        const body = req.body;
+        const user = body?.user;
+
+        const date = new Date(body.date.split('-').reverse().join('-'));
+
+        try {
+            const Projects = new this.Projects({
+                ...body,
+                User: user._id,
+            });
+            const project = await Projects.changeState(new Date(date));
+            if (project) {
+                response.data = project as ProjectsType;
+            } else {
+                response.data = 'Project not found';
+            }
+        } catch (error) {
+            const result = createError(error);
+            response.error = true;
+            response.data = result.error;
+            status = result.status;
+        }
+
+        return res.status(status).json(response);
+    };
 }

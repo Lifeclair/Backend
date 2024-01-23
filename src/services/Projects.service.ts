@@ -1,10 +1,9 @@
 import {
     CreateProjectDto,
     DaysOfTheWeekArray,
-    GetProjectById,
     GetByUserId,
-    daysOfTheWeek,
 } from '@/DTO/Project.dtos';
+import { IdValidate } from '@/DTO/generals.dtos';
 import { ProjectsModel, ProjectsType } from '@/Schemas/Projects.schema';
 import { GeneralService } from './General.service';
 
@@ -58,7 +57,7 @@ export class ProjectsService extends GeneralService {
         return projectCrated;
     };
 
-    getProjectById = async () => {};
+    IdValidate = async () => {};
     getProjectsByUserId = async () => {
         const idUser = this.Projects.User.toString();
         const projectValidation = new GetByUserId({ idUser });
@@ -79,7 +78,7 @@ export class ProjectsService extends GeneralService {
 
         const idProject = this.Projects._id.toString();
         const idUser = this.Projects.User.toString();
-        const project = new GetProjectById({ id: idProject });
+        const project = new IdValidate({ id: idProject });
         await this.transformValidatorErrors(project);
 
         const projectFound = await ProjectsModel.findOne({
@@ -137,7 +136,7 @@ export class ProjectsService extends GeneralService {
 
         const idProject = this.Projects._id.toString();
         const idUser = this.Projects.User.toString();
-        const project = new GetProjectById({ id: idProject });
+        const project = new IdValidate({ id: idProject });
         await this.transformValidatorErrors(project);
 
         const projectFound = await ProjectsModel.findOne({
@@ -170,5 +169,49 @@ export class ProjectsService extends GeneralService {
         projectFound.save();
 
         return projectFound;
+    };
+
+    getAllProjectsWithoutDoItDays = async () => {
+        const idUser = this.Projects.User.toString();
+        const idUserValidate = new IdValidate({ id: idUser });
+        await this.transformValidatorErrors(idUserValidate);
+
+        const projects = await ProjectsModel.find({
+            User: idUser,
+        }).select('-doItDays -__v -User');
+
+        return projects;
+    };
+
+    deleteProject = async () => {
+        if (!this.Projects._id || !this.Projects.User)
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+
+        const idProject = this.Projects._id.toString();
+        const idUser = this.Projects.User.toString();
+        const project = new IdValidate({ id: idProject });
+        await this.transformValidatorErrors(project);
+
+        const projectFound = await ProjectsModel.findOne({
+            _id: idProject,
+            User: idUser,
+        });
+
+        if (!projectFound) {
+            throw {
+                error: true,
+                message: 'Project not found',
+            };
+        }
+
+        await ProjectsModel.deleteOne({
+            _id: idProject,
+            User: idUser,
+        });
+
+        return true;
     };
 }

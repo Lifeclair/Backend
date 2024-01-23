@@ -162,4 +162,66 @@ export class ProjectsController {
 
         return res.status(status).json(response);
     };
+    getAllProjectsWithoutDoItDays = async (req: Request, res: Response) => {
+        let status = 200;
+
+        const response: ResponseApi<string | ProjectsType[] | string[]> = {
+            error: false,
+            data: '',
+        };
+        const body = req.body;
+        const user = body?.user;
+
+        try {
+            const Projects = new this.Projects({
+                ...body,
+                User: user._id,
+            });
+            const projects = await Projects.getAllProjectsWithoutDoItDays();
+            if (projects) {
+                response.data = projects;
+            } else {
+                response.data = 'Project not found';
+            }
+        } catch (error) {
+            const result = createError(error);
+            response.error = true;
+            response.data = result.error;
+            status = result.status;
+        }
+
+        return res.status(status).json(response);
+    };
+
+    deleteProject = async (req: Request, res: Response) => {
+        let status = 200;
+
+        const response: ResponseApi<string | string[]> = {
+            error: false,
+            data: '',
+        };
+        const body = req.body;
+        const user = body?.user;
+        const id = body?.id;
+        try {
+            const Projects = new this.Projects({
+                ...body,
+                _id: id,
+                User: user._id,
+            });
+            const deleted = await Projects.deleteProject();
+            if (deleted) {
+                response.data = 'Project deleted successfully';
+            } else {
+                response.data = "Project don't deleted";
+            }
+        } catch (error) {
+            const result = createError(error);
+            response.error = true;
+            response.data = result.error;
+            status = result.status;
+        }
+
+        return res.status(status).json(response);
+    };
 }

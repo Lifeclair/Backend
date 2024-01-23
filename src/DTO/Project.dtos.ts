@@ -95,15 +95,7 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User' | '_id'> {
     night?: boolean | null | undefined;
 }
 
-export class GetProjectById {
-    @IsString()
-    @MinLength(4)
-    @MaxLength(100)
-    id: string;
-    constructor({ id }: GetProjectById) {
-        this.id = id;
-    }
-}
+
 
 export class GetByUserId {
     @IsString()

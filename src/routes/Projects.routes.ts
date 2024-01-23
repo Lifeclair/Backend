@@ -39,6 +39,18 @@ export class ProjectRoutes {
             this.projectController.changeState
         );
 
+        this.router.get(
+            `/${this.path}/${this.version}/getAllProjectsWithoutDoItDays`,
+            validateToken,
+            this.projectController.getAllProjectsWithoutDoItDays
+        );
+
+        this.router.post(
+            `/${this.path}/${this.version}/delete`,
+            validateToken,
+            this.projectController.deleteProject
+        )
+
         return this.router;
     }
 }

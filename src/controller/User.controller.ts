@@ -20,7 +20,7 @@ export class UserController {
 
         try {
             const User = new this.User({ email, password });
-            const user = await User.Login();
+            const user = await User.login();
             response.data = user;
         } catch (error) {
             const result = createError(error);

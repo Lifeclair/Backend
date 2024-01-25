@@ -1,18 +1,57 @@
 import { UserModel, UserType } from '@/Schemas';
 import { createToken } from '@/utilities';
 import bcrypt from 'bcrypt';
-import { ValidateNested } from 'class-validator';
+import { ValidateNested, validateOrReject } from 'class-validator';
 
 export class UserService {
     @ValidateNested()
-    User: UserType;
+    User: Partial<UserType>;
     private saltRounds = 10;
 
-    constructor(User: UserType) {
+    register = async (): Promise<UserType> => {
+        const user = await UserModel.findOne({ email: this.User.email });
+        if (user) {
+            throw {
+                message: 'User not created.',
+                status: 400,
+                error: true,
+            };
+        }
+        const salt = bcrypt.genSaltSync(this.saltRounds);
+
+        const User = new UserModel(this.User);
+        validateOrReject(User);
+
+        const hashPassword = bcrypt.hashSync(User.password, salt);
+        this.User.password = hashPassword;
+
+        const userToCreate: UserType = {
+            created: new Date(),
+            updated: new Date(),
+            deleted: null,
+            active: true,
+            userAttempts: 0,
+            blocked: false,
+            lastLogin: new Date(),
+            blockedDate: null,
+            attempsLogin: 0,
+            passwordID: crypto.randomUUID(),
+            name: User.name,
+            email: User.email,
+            password: User.password,
+        };
+
+        this.User = userToCreate;
+
+        const newUser = new UserModel(this.User);
+        return newUser.save();
+    };
+
+    constructor(User: Partial<UserType>) {
         this.User = User;
     }
 
-    public async Login(): Promise<string> {
+    public async login(): Promise<string> {
         if (!this.User.email || !this.User.password) {
             throw {
                 message: 'User or password incorrect',
@@ -76,40 +115,6 @@ export class UserService {
         return createToken(user);
     }
 
-    register = async (): Promise<UserType> => {
-        const user = await UserModel.findOne({ email: this.User.email });
-        if (user) {
-            throw {
-                message: 'User not created.',
-                status: 400,
-                error: true,
-            };
-        }
-        const salt = bcrypt.genSaltSync(this.saltRounds);
-
-        const hashPassword = bcrypt.hashSync('cristian890789', salt);
-        this.User.password = hashPassword;
-
-        const userToCreate: UserType = {
-            ...this.User,
-            created: new Date(),
-            updated: new Date(),
-            deleted: null,
-            active: true,
-            userAttempts: 0,
-            blocked: false,
-            lastLogin: new Date(),
-            blockedDate: null,
-            attempsLogin: 0,
-            passwordID: crypto.randomUUID(),
-        };
-
-        this.User = userToCreate;
-
-        const newUser = new UserModel(this.User);
-        return newUser.save();
-    };
-
     static getById = async (id: string): Promise<UserType> => {
         const user = await UserModel.findById(id);
         if (!user) {
@@ -117,7 +122,7 @@ export class UserService {
                 message: 'User not found',
                 status: 404,
                 error: true,
-            };                                                              
+            };
         }
         return user;
     };

@@ -1,3 +1,4 @@
+import { LoginDto, RegisterDto } from '@/DTO/User.dots';
 import { UserModel, UserType } from '@/Schemas';
 import { createToken } from '@/utilities';
 import bcrypt from 'bcrypt';
@@ -8,7 +9,19 @@ export class UserService {
     User: Partial<UserType>;
     private saltRounds = 10;
 
+    constructor(User: Partial<UserType>) {
+        this.User = User;
+    }
+
     register = async (): Promise<UserType> => {
+        const userValidation = new RegisterDto({
+            name: this.User.name || '',
+            email: this.User.email || '',
+            password: this.User.password || '',
+        });
+
+        await validateOrReject(userValidation);
+
         const user = await UserModel.findOne({ email: this.User.email });
         if (user) {
             throw {
@@ -17,6 +30,7 @@ export class UserService {
                 error: true,
             };
         }
+
         const salt = bcrypt.genSaltSync(this.saltRounds);
 
         const User = new UserModel(this.User);
@@ -47,18 +61,14 @@ export class UserService {
         return newUser.save();
     };
 
-    constructor(User: Partial<UserType>) {
-        this.User = User;
-    }
+    async login(): Promise<string> {
+        const loginValidation = new LoginDto({
+            name: this.User.name || '',
+            email: this.User.email || '',
+            password: this.User.password || '',
+        });
 
-    public async login(): Promise<string> {
-        if (!this.User.email || !this.User.password) {
-            throw {
-                message: 'User or password incorrect',
-                status: 400,
-                error: true,
-            };
-        }
+        await validateOrReject(loginValidation);
 
         const user = await UserModel.findOne({
             email: this.User.email,
@@ -88,7 +98,7 @@ export class UserService {
         }
 
         const hashPassword = bcrypt.compareSync(
-            this.User.password,
+            loginValidation.password,
             user.password || ''
         );
 

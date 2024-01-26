@@ -1,5 +1,5 @@
 import { UserType } from '@/Schemas';
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 interface Create
     extends Omit<
@@ -14,9 +14,10 @@ interface Create
         | 'lastLogin'
         | 'blockedDate'
         | 'attempsLogin'
+        | 'passwordID'
     > {}
 
-export class CreateDto implements Create {
+export class RegisterDto implements Create {
     @IsString()
     @MinLength(4)
     @MaxLength(100)
@@ -28,26 +29,23 @@ export class CreateDto implements Create {
     email: string;
 
     @IsString()
-    @MinLength(4)
-    @MaxLength(100)
+    @MinLength(10)
+    @MaxLength(20)
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+        message: 'password too weak',
+    })
     password: string;
 
-    @IsString()
-    @MinLength(4)
-    @MaxLength(10)
-    passwordID: string;
-
-    constructor({ name, email, password, passwordID }: Create) {
+    constructor({ name, email, password }: Create) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.passwordID = passwordID;
     }
 }
 
 interface Login {
-    email: UserType['email'];
-    password: UserType['password'];
+    email: UserType['email'] | undefined;
+    password: UserType['password'] | undefined;
 }
 
 export class LoginDto implements Login {

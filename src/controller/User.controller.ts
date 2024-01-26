@@ -40,11 +40,13 @@ export class UserController {
             data: '',
         };
         const body = req.body;
+
         const email = body?.email;
         const password = body?.password;
+        const name = body?.name;
 
         try {
-            const User = new this.User({ email, password });
+            const User = new this.User({ email, password, name });
             const user = await User.register();
             if (user) {
                 response.data = 'User created successfully';
@@ -52,6 +54,7 @@ export class UserController {
                 response.data = 'User not created';
             }
         } catch (error) {
+            console.log(error);
             const result = createError(error);
             response.error = true;
             response.data = result.error;

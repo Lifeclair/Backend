@@ -10,7 +10,7 @@ export class UserRoutes {
     initializeRoutes() {
         this.router.post(
             `/${this.path}/${this.version}/login`,
-            this.userController.getUserLogin
+            this.userController.login
         );
 
         this.router.post(

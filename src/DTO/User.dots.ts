@@ -1,5 +1,11 @@
 import { UserType } from '@/Schemas';
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import {
+    IsEmail,
+    IsString,
+    Matches,
+    MaxLength,
+    MinLength,
+} from 'class-validator';
 
 interface Create
     extends Omit<
@@ -26,6 +32,7 @@ export class RegisterDto implements Create {
     @IsString()
     @MinLength(4)
     @MaxLength(100)
+    @IsEmail()
     email: string;
 
     @IsString()

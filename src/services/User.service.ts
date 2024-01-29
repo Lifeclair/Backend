@@ -52,7 +52,7 @@ export class UserService {
             passwordID: crypto.randomUUID(),
             name: User.name,
             email: User.email,
-            password: User.password,
+            password: this.User.password,
         };
 
         this.User = userToCreate;

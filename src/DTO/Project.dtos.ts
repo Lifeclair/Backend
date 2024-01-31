@@ -44,7 +44,7 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User' | '_id'> {
     days: DaysOfTheWeekArray;
 
     @IsArray()
-    hours: string[];
+    hours: ProjectsType['hours'];
 
     @IsNumber()
     @ValidateIf((obj, value) => value !== null && value !== undefined)
@@ -94,8 +94,6 @@ export class CreateProjectDto implements Omit<ProjectsType, 'User' | '_id'> {
     afternoon?: boolean | null | undefined;
     night?: boolean | null | undefined;
 }
-
-
 
 export class GetByUserId {
     @IsString()

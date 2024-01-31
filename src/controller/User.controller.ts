@@ -17,7 +17,6 @@ export class UserController {
         const body = req.body;
         const email = body?.email;
         const password = body?.password;
-        console.log(req.body);
         try {
             const User = new this.User({ email, password });
             const user = await User.login();

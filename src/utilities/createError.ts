@@ -14,7 +14,6 @@ export const createError = (error: unknown) => {
             return lastError;
         }, []);
     } else if (error instanceof Error) {
-        console.log(error);
         response.status = 502;
         response.error = 'Oops, something went wrong';
     } else if (

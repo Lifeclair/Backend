@@ -6,7 +6,18 @@ export const Projects = new mongoose.Schema({
         required: true,
     },
     days: [String],
-    hours: [String],
+    hours: [
+        {
+            hour: {
+                type: String,
+                required: true,
+            },
+            rangeDate: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
     doItDays: [
         {
             date: {

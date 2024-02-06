@@ -9,6 +9,22 @@ export const ExtraDataProject = new mongoose.Schema({
         type: String,
         required: true,
     },
+    data: [
+        {
+            day: {
+                type: Date,
+                required: true,
+            },
+            information: {
+                type: String,
+                required: true,
+            },
+            id: {
+                type: String,
+                required: true,
+            },
+        },
+    ],
     Project: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Projects',

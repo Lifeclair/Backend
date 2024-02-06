@@ -10,6 +10,12 @@ export class ExtraDataProjectRoutes {
     path = 'extraDataProject';
 
     initializeRoutes() {
+        this.router.post(
+            `/${this.path}/${this.version}/create`,
+            validateToken,
+            this.projectController.create
+        );
+
         return this.router;
     }
 }

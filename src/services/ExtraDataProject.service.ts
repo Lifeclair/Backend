@@ -1,21 +1,38 @@
-import { ExtraDataProjectType } from '@/Schemas';
-import { GeneralService } from './General.service';
+import { CreateExtraData } from '@/DTO';
+import { ExtraDataProjectModel, ExtraDataProjectType } from '@/Schemas';
+import { PartialExtraDataProjectType } from '@/models';
 import { Types } from 'mongoose';
-type PartialExtraDataProjectType = Partial<ExtraDataProjectType>;
+import { GeneralService } from './General.service';
 
 export class ExtraDataProjectService
     extends GeneralService
     implements PartialExtraDataProjectType
 {
+    ExtraDataProjectModel = ExtraDataProjectModel;
+
     name?: string;
     typeOfData?: string;
-    Project?: Types.ObjectId;
-    _id?: Types.ObjectId;
+    Project?: string;
+    _id?: string;
+    data?: ExtraDataProjectType['data'];
+
     constructor(ExtraDataProject: PartialExtraDataProjectType) {
         super();
         this.name = ExtraDataProject.name;
         this.typeOfData = ExtraDataProject.typeOfData;
         this.Project = ExtraDataProject.Project;
         this._id = ExtraDataProject._id;
+        this.data = ExtraDataProject.data;
+    }
+    async create(): Promise<ExtraDataProjectType> {
+        const project = new CreateExtraData({
+            name: this.name,
+            typeOfData: this.typeOfData,
+            Project: this.Project,
+            data: this.data,
+        });
+        await this.transformValidatorErrors(project);
+        const projectCrated = await this.ExtraDataProjectModel.create(this);
+        return projectCrated;
     }
 }

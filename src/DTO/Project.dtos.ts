@@ -21,7 +21,6 @@ type DaysOfTheWeek =
     | 'Saturday'
     | 'Sunday';
 export type DaysOfTheWeekArray = Partial<DaysOfTheWeek>[];
-const prueba: DaysOfTheWeekArray = ['Monday'];
 
 export const daysOfTheWeek: DaysOfTheWeekArray = [
     'Monday',

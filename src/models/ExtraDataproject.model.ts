@@ -5,6 +5,11 @@ export interface ICreateExtraDataProject
     Project?: string;
 }
 
+export interface IAddData {
+    id?: string;
+    data?: ExtraDataProjectType['data'];
+}
+
 export interface PartialExtraDataProjectType
     extends Partial<Omit<ExtraDataProjectType, '_id' | 'Project'>> {
     _id?: string;

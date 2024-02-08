@@ -1,4 +1,5 @@
 export interface ResponseApi<T> {
     error: boolean;
-    data: T;
+    data: T | string | string[];
+    status: number;
 }

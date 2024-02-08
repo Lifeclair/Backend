@@ -1,4 +1,4 @@
-import { ICreateExtraDataProject } from '@/models';
+import { IAddData, ICreateExtraDataProject } from '@/models';
 import {
     IsArray,
     IsIn,
@@ -8,6 +8,25 @@ import {
     ValidateIf,
 } from 'class-validator';
 import { Types } from 'mongoose';
+
+export class AddData implements IAddData {
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    id: string;
+
+    @IsArray()
+    data?: Types.DocumentArray<{
+        day: Date;
+        information: string;
+        id: string;
+    }>;
+
+    constructor({ id, data }: IAddData) {
+        this.id = id || '';
+        this.data = data;
+    }
+}
 
 export class CreateExtraData implements ICreateExtraDataProject {
     @IsString()

@@ -1,4 +1,4 @@
-import { CreateExtraData } from '@/DTO';
+import { AddData, CreateExtraData } from '@/DTO';
 import { ExtraDataProjectModel, ExtraDataProjectType } from '@/Schemas';
 import { PartialExtraDataProjectType } from '@/models';
 import { Types } from 'mongoose';
@@ -34,5 +34,28 @@ export class ExtraDataProjectService
         await this.transformValidatorErrors(project);
         const projectCrated = await this.ExtraDataProjectModel.create(this);
         return projectCrated;
+    }
+    async addData(): Promise<ExtraDataProjectType> {
+        const project = new AddData({
+            data: this.data,
+            id: this._id,
+        });
+        await this.transformValidatorErrors(project);
+        const projectUpdated = await this.ExtraDataProjectModel.findById({
+            _id: this._id,
+        });
+        if (!projectUpdated) {
+            throw {
+                message: 'Project not found',
+                status: 404,
+                error: true,
+            };
+        }
+        if (Array.isArray(this.data)) {
+            projectUpdated.data.push(this.data);
+        }
+        await projectUpdated.save();
+
+        return projectUpdated;
     }
 }
